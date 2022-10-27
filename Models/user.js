@@ -5,19 +5,15 @@ const schemaUser = new mongoose.Schema(
       type: String,
       trim: true,
     },
-
     adresse: {
       type: String,
-  
     },
-   tel: {
-      type: Number,
-      
-  
+    tel: {
+      type: String,
     },
     email: {
       type: String,
-      // required: true,
+      required: true,
       trim: true,
       unique: true,
     },
@@ -27,13 +23,15 @@ const schemaUser = new mongoose.Schema(
       trim: true,
       unique: true,
     },
-
     role: {
       type: String,
       trim: true,
+      default: 'Client'
     },
-   // image:{type:String},
+    image: { type: String , default: ''},
+    isActivated : {type: Boolean, default: false},
     token: { type: String },
+    verificationCode: { type: String },
   },
   { timestamps: true, versionKey: false }
 );

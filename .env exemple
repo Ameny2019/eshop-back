@@ -1,4 +1,7 @@
-MONGO_URL=
+MONGO_URL=mongodb://localhost:27017/eshop
 PORT=3000
 JWT_SECRET_KEY=JwtKEY123
 JWT_EXPIRES_IN=7d
+MAIL=rimtest43@gmail.com
+PASSWORD=rim44test**
+DASHBOARD_URL=http://localhost:4200/
