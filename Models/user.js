@@ -35,7 +35,7 @@ const schemaUser = new mongoose.Schema(
    // image:{type:String},
     token: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 module.exports = mongoose.model("user", schemaUser);
 

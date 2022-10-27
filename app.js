@@ -1,22 +1,28 @@
-var express = require('express');
-var http = require('http');
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const cors = require("cors")
+const passport = require('passport');
+const {success} = require("consola");
+// passport config
+require("./middelwares/bearerStrategy")
+// dotenv config
+require("dotenv").config();
+// Connect to database
+require("./Config/database");
 
-var app = express();
-var server = http.createServer(app);
+const app = express();
+const server = http.createServer(app);
+const io = require('socket.io')(server);
+const port=process.env.port || 3000;
 
-var io = require('socket.io')(server);
-var path = require('path');
+// app config
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+app.use(cors());
+app.use(passport.initialize());
 
-//****************serveur */
-//var express= require("express")
-var cors = require("cors")
-const {success,error} = require("consola")
-//var app = express();
- const port=process.env.port || 3000;
- const DB= require("./Config/database")
-
-const { urlencoded } = require("express");
-// cette partie 2 ajouté aprés  routestamps.js
+// app routes
 const routeEstamp = require("./Routers/Routestamp");
 const routeUser = require("./Routers/Routeuser");
 const routeCategorie=require("./Routers/RouteCategorie");
@@ -24,35 +30,24 @@ const routeAuth = require("./Routers/RouteAuth");
 const routeEfleur = require("./Routers/Routeefleur");
 const routeCart = require("./Routers/RouteCart");
 const routerProduct = require("./Routers/RouteProduct");
-//fin de partie 2
-app.use(express.json());
-app.use(express.urlencoded({extended:false}));
-app.use(cors());
 
-//app.use fait partie du partie 2
 app.use("/estamps", routeEstamp);
 app.use("/user",routeUser);
-
 app.use("/efleur",routeEfleur);
-
 app.use("/categorie",routeCategorie);
 app.use("/auth", routeAuth);
 app.use("/Cart",routeCart);
 app.use("/product",routerProduct);
 
+// Static files 
 app.use(express.static('storages'));
-
-//***************************fin serveur */
-
 app.use(express.static(path.join(__dirname,'./public')));
-
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-
-var name;
-
+// socket io 
+let name;
 io.on('connection', (socket) => {
   console.log('new user connected');
   
@@ -60,33 +55,19 @@ io.on('connection', (socket) => {
   	name = username;
   	io.emit('chat message', `---${name} joined the chat---`);
   });
-  
   socket.on('disconnect', () => {
     console.log('user disconnected');
     io.emit('chat message', `---${name} left the chat---`);
-    
   });
   socket.on('chat message', (msg) => {
-    socket.broadcast.emit('chat message', msg);         //sending message to all except the sender
+    socket.broadcast.emit('chat message', msg);
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server listening on :3000');
+// server starting
+server.listen(port, () => {
+  success({
+          message:`Server listening at the port ${port}`,
+          badge:true
+      })
 });
-
-//************server */
-
-// app.listen(port,async()=>{
-//   try {
-//     success({
-//       message:`sucess to connect to server via port:${port}`,
-//       badge:true
-//     })
-//   } catch (error) {
-//     error({
-//       message:"error",
-//       badge:true
-//     })
-//   }
-// })

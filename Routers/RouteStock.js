@@ -1,13 +1,11 @@
+const passport = require("passport");
+const routeStock = require("express").Router();
+const stockController = require("../Controllers/stockController")
 
-const routeStock = require ("express").Router();//importer fonction Router() de express
-const stockController=require("../Controllers/stockController")
+routeStock.post("/createStock", passport.authenticate("bearer", { session: false }), stockController.CreateStock);
+routeStock.get("/GetAllStock", passport.authenticate("bearer", { session: false }), stockController.GetAllStock);
+routeStock.get("/GetStockByID/:id", passport.authenticate("bearer", { session: false }), stockController.GetStockByID);
+routeStock.put("/UpdateStock/:id", passport.authenticate("bearer", { session: false }), stockController.UpdateStock);
+routeStock.delete("/DeleteStock/:id", passport.authenticate("bearer", { session: false }), stockController.DeleteStock);
 
-
-routeStock.post("/createStock",stockController.CreateStock);
-routeStock.get("/GetAllStock",stockController.GetAllStock);
-routeStock.get("/GetStockByID/:id",stockController.GetStockByID);
-routeStock.put("/UpdateStock/:id",stockController.UpdateStock);
-routeStock.delete("/DeleteStock/:id",stockController.DeleteStock);
-
-
-module.exports =routeStock
+module.exports = routeStock

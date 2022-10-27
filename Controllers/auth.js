@@ -1,19 +1,13 @@
-
 const User = require("../Models/user");
-
 const bcrypt = require("bcryptjs");
 const { randomBytes } = require("crypto");
 const { join } = require("path");
 const jwt = require("jsonwebtoken");
-
 const nodemailer = require("nodemailer");
-const DOMAIN = process.env.APP_DOMAIN;
-//const SECRET = process.env.APP_SECRET;
-const SECRET ="JwtKEY123";
-var randtoken = require('rand-token');
+const randtoken = require('rand-token');
 
 
-// var transporter = nodemailer.createTransport({
+// const transporter = nodemailer.createTransport({
 //   service: "gmail",
 //   auth: {
 //     user: "rimtest43@gmail.com",
@@ -21,7 +15,7 @@ var randtoken = require('rand-token');
 //   },
 // });
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "testameny92@gmail.com",
@@ -30,16 +24,14 @@ var transporter = nodemailer.createTransport({
 });
 
 function sendEmail(email, token) {
-  var email = email;
-  var token = token;
-  var mail = nodemailer.createTransport({
+  const mail = nodemailer.createTransport({
   service: 'gmail',
   auth: {
   user: 'ameny.ouelhazi@gmail.com', // Your email id
   pass: 'sticl1e2009' // Your password
   }
   });
-  var mailOptions = {
+  const mailOptions = {
   from: 'tutsmake@gmail.com',
   to: email,
   subject: 'Reset Password Link - Tutsmake.com',
@@ -157,13 +149,12 @@ module.exports = {
         // 2 eme etape creation de token
         const token = jwt.sign(
           {
-            id: user._id,
-            user: user,
+            userId: user._id,
+            email: user.email,
+            role: user.role,
           },
-          //"shhhhh",
-          SECRET,
-          { expiresIn: "7 days" }
-          /*  { expiresIn: '24h' } */
+          process.env.JWT_SECRET_KEY,
+          { expiresIn: process.env.JWT_EXPIRES_IN }
         );
         const result = {
           email: user.email,
@@ -212,7 +203,7 @@ module.exports = {
 
   //******************************** */
   resetPassword: async function (req,res,next){
-    var email= req.body.email;
+    const email= req.body.email;
     console.log("email",email);
     
     await User.findOne({ email: email }).exec((err, userByemail) => {
@@ -228,13 +219,13 @@ module.exports = {
           data: userByemail,
         });
 
-        var newToken=randtoken.generate(20);
+        const newToken=randtoken.generate(20);
        // console.log("newtoken",newToken);
-        var sent = sendEmail(email, newToken);
+        const sent = sendEmail(email, newToken);
  
              if (sent != '0') {
  
-                var data = {
+                const data = {
                     token: newToken
                 }
                 User.findOneAndUpdate(email,data)
