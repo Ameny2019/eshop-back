@@ -19,14 +19,18 @@ const updateUserProfile = async (req, res) => {
         } else {
             if (req.file) {
                 const fileName = path.basename(userToUpdate.avatar);
-                const filePath = path.resolve('./public/images', fileName);
+                const filePath = path.resolve('./storages', fileName);
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
                 }
-                req.body.avatar = `${req.protocol}://${req.headers.host}/public/images/${req.file.filename}`;
+                req.body.avatar = `${req.protocol}://${req.headers.host}/${req.file.filename}`;
             }
             const updatedProfile = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
-            res.json({ message: "Modification a été effectuée avec succès.", avatar: updatedProfile.avatar });
+            res.json({
+                message: "Modification a été effectuée avec succès.", 
+            avatar: updatedProfile.avatar,
+            username: updatedProfile.nom,
+         });
         }
     } catch (err) {
         console.log(err);
