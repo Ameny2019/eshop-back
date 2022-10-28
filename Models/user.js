@@ -28,7 +28,7 @@ const schemaUser = new mongoose.Schema(
       trim: true,
       default: 'Client'
     },
-    image: { type: String , default: ''},
+    avatar: { type: String , default: 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'},
     isActivated : {type: Boolean, default: false},
     token: { type: String },
     verificationCode: { type: String },

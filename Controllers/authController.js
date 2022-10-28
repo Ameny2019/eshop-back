@@ -80,6 +80,8 @@ const login = async (req, res) => {
               userId: user._id,
               email: user.email,
               role: user.role,
+              username: user.nom,
+              avatar: user.photo,
             },
             process.env.JWT_SECRET_KEY,
             { expiresIn: process.env.JWT_EXPIRES_IN }
@@ -112,18 +114,9 @@ const logout = async (req, res) => {
   }
 }
 
-const profile = async (req, res) => {
-  try {
-    return res.status(200).json({ data: req.user });
-  } catch (error) {
-    return res.status(404).json({ message: error.message });
-  }
+module.exports = {
+  register,
+  activationAccount,
+  login,
+  logout,
 }
-
-  module.exports = {
-    register,
-    activationAccount,
-    login,
-    logout,
-    profile
-  }

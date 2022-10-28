@@ -27,15 +27,17 @@ app.use(compression());
 app.use(passport.initialize());
 
 // app routes
+const routeAuth = require("./Routers/RouteAuth");
+const routeProfile = require("./Routers/profileRoute");
 const routeEstamp = require("./Routers/Routestamp");
 const routeUser = require("./Routers/Routeuser");
 const routeCategorie=require("./Routers/RouteCategorie");
-const routeAuth = require("./Routers/RouteAuth");
 const routeEfleur = require("./Routers/Routeefleur");
 const routeCart = require("./Routers/RouteCart");
 const routerProduct = require("./Routers/RouteProduct");
 
 app.use("/auth", routeAuth);
+app.use("/auth", routeProfile);
 app.use("/estamps", routeEstamp);
 app.use("/user",routeUser);
 app.use("/efleur",routeEfleur);
