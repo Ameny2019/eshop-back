@@ -15,16 +15,18 @@ const schemaCategorie = new mongoose.Schema(
     },
 
     forme: {
-        type: String,
-        trim: true,
-      },
-    prix : {
-        type: String,
-        trim: true,
-      },
+      type: String,
+      trim: true,
+    },
+    prix: {
+      type: String,
+      trim: true,
+    },
   },
-  { timestamps: true }
-);
+  {
+    timestamps: true,
+    versionKey: false,
+  });
 module.exports = mongoose.model("categorie", schemaCategorie);
 
 
