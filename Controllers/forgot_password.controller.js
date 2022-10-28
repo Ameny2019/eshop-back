@@ -1,5 +1,6 @@
 const User = require("../Models/user");
 const Token = require("../models/reset_token");
+const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const sendEmail = require('../Utils/mail')
 
@@ -50,7 +51,8 @@ exports.resetPassword = async (req, res) => {
         const diffSeconds = Math.floor(diffDate / 1000);
         if(diffSeconds < 3600)
         {
-          const usertoUpdate = await User.findByIdAndUpdate(passwordResetToken.userId, { password: req.body.password}, { new: true })
+          const passwordCrypted = bcrypt.hashSync(req.body.password, 10);
+          const usertoUpdate = await User.findByIdAndUpdate(passwordResetToken.userId, { password: passwordCrypted}, { new: true })
           await sendEmail(
               usertoUpdate.email,
               "Réinitialisation du mot de passe avec succès",

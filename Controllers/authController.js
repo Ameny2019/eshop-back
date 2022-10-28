@@ -1,9 +1,7 @@
 const User = require("../Models/user");
 const bcrypt = require("bcryptjs");
 const { randomBytes } = require("crypto");
-const { join } = require("path");
 const jwt = require("jsonwebtoken");
-const randtoken = require('rand-token');
 const sendEmail = require('../Utils/mail');
 
 
