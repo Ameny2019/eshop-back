@@ -2,15 +2,19 @@ const Product = require("../Models/product");
 
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find().sort({_id:"desc"})
+        const estampsProducts = await Product.find({producType : 'estamp'})
+        .sort({_id:"desc"})
         .populate({
             path: "estamp",
             model: "estamps"
-        }).populate({
+        });
+
+        const fleursProducts = await Product.find({producType : 'efleur'}).sort({_id:"desc"})
+        .populate({
             path: "efleur",
             model: "efleur"
         });
-        return res.status(200).json(products);
+        return res.status(200).json({fleursProducts, estampsProducts});
     } catch (error) {
         return res.status(404).json({ message: error.message });
     }
