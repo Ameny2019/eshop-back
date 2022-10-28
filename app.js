@@ -29,6 +29,7 @@ app.use(passport.initialize());
 // app routes
 const routeAuth = require("./Routers/RouteAuth");
 const routeProfile = require("./Routers/profileRoute");
+const routeHome = require("./Routers/homeRouter");
 const routeEstamp = require("./Routers/Routestamp");
 const routeUser = require("./Routers/Routeuser");
 const routeCategorie=require("./Routers/RouteCategorie");
@@ -38,6 +39,7 @@ const routerProduct = require("./Routers/RouteProduct");
 
 app.use("/auth", routeAuth);
 app.use("/auth", routeProfile);
+app.use("/home", routeHome);
 app.use("/estamps", routeEstamp);
 app.use("/user",routeUser);
 app.use("/efleur",routeEfleur);
