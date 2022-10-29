@@ -104,10 +104,17 @@ const login = async (req, res) => {
   }
 }
 
-const logout = async (req, res) => {
+const logout = async (req, res, next) => {
   try {
-    req.logout(); // Invoking logout() will remove the req.user property and clear the login session (if any).
-    res.json({ message: "Vous êtes déconnecté avec succès." });
+    // Invoking logout() will remove the req.user property and clear the login session (if any).
+    req.logout((err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ message: "Erreur interne dans le serveur!" });
+      } else {
+        res.json({ message: "Vous êtes déconnecté avec succès." });
+      }
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Erreur interne dans le serveur!" });

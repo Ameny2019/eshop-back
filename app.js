@@ -5,6 +5,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const compression = require("compression");
 const passport = require('passport');
+const session = require('express-session');
 const {success} = require("consola");
 // passport config
 require("./middelwares/bearerStrategy")
@@ -24,7 +25,14 @@ app.use(express.urlencoded({extended:false}));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(compression());
+app.use(session({
+  secret: 'r8q,+&1LM3)CD*zAGpx1xm{NeQhc;#',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+}));
 app.use(passport.initialize());
+app.use(passport.session());
 
 // app routes
 const routeAuth = require("./Routers/RouteAuth");
