@@ -1,5 +1,9 @@
 const cartRepository = require('../Repository/cartRepository')
 const productRepository = require('../Repository/ProductRepository');
+const Product = require('../Models/product');
+const Estamp = require('../Models/estamp');
+const Efleur = require('../Models/efleur');
+
 exports.addItemToCart = async (req, res) => {
     console.log("here");
     productId = req.body.productId;
@@ -231,7 +235,23 @@ exports.removeSingleProduct = async (req, res) => {
 
 exports.createCart = async (req, res) => {
     try {
+        // Step 1: create cart
         const cart = await cartRepository.addItem(req.body);
+        // Step 2: update stock
+        req.body.items.map(async(item)=>{
+            const productFound = await Product.findById(item.idProduct);
+            if(productFound){
+                if(productFound.producType === 'estamp'){
+                    await Estamp.findByIdAndUpdate(productFound.estamp, { "$inc": { QunatityEstampDisponible: - item.quantity } }, { new: true })
+                }
+                if(productFound.producType === 'efleur'){
+                    await Efleur.findByIdAndUpdate(productFound.efleur, { "$inc": { QunatityEfleurDisponible: - item.quantity } }, { new: true })
+                }
+            }
+        });
+        // Step 3: create pdf of invoice
+        // Step 4: send invoice in mail
+        // Step 5: return response
         res.json(cart);
     } catch (error) {
         console.log(error);
