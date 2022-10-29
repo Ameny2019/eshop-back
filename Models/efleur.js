@@ -3,18 +3,13 @@ const SchemaEfleur = new mongoose.Schema(
     {
         nom: {
             type: String,
-            //srequired:true,
             trim: true,
         },
         photo: {
             type: String,
-            //required:true,
-            //trim: true,
         },
-
         description: {
             type: String,
-            //  Required : true,
         },
         etatProduct: { type: String, default: 'NON' },
         QunatityEfleurDisponible: {

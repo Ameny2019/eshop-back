@@ -3,23 +3,17 @@ const schemaEstamps = new mongoose.Schema(
     {
         sujet: {
             type: String,
-            //srequired:true,
             trim: true,
         },
-
         photo: {
             type: String,
             required: true,
-            //trim: true,
-
         },
         reference: {
             type: String,
-
         },
         format: {
             type: String,
-            // Required:true,
             trim: true,
         },
         dateEmission: {
@@ -28,17 +22,11 @@ const schemaEstamps = new mongoose.Schema(
         serie: {
             Type: String,
         },
-
         artiste: {
             type: String,
-            // required:true,
             trim: true,
 
         },
-        // prix : {
-        //     type :String,
-        //   //  Required : true,
-        // },
         categorie: {
             type: mongoose.Types.ObjectId,
             ref: "categorie"
