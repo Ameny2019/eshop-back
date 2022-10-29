@@ -2,14 +2,18 @@ const Product = require("../Models/product");
 
 exports.getProducts = async (req, res) => {
     try {
+        const limit = req.query.limit ? Number.parseInt(req.query.limit) : 8;
         const estampsProducts = await Product.find({producType : 'estamp'})
+        .limit(limit)
         .sort({_id:"desc"})
         .populate({
             path: "estamp",
             model: "estamps"
         });
 
-        const fleursProducts = await Product.find({producType : 'efleur'}).sort({_id:"desc"})
+        const fleursProducts = await Product.find({producType : 'efleur'})
+        .limit(limit)
+        .sort({_id:"desc"})
         .populate({
             path: "efleur",
             model: "efleur"
