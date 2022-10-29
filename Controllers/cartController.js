@@ -229,12 +229,14 @@ exports.removeSingleProduct = async (req, res) => {
     }
 }
 
-//function
 exports.createCart = async (req, res) => {
-    const cartData = req.body;
-    cart = await cartRepository.addItem(cartData);
-    // let data = await cart.save();
-    res.json(cart);
+    try {
+        const cart = await cartRepository.addItem(req.body);
+        res.json(cart);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Erreur interne dans le serveur!" });
+    }
 }
 
 
