@@ -3,6 +3,10 @@ const productRepository = require('../Repository/ProductRepository');
 const Product = require('../Models/product');
 const Estamp = require('../Models/estamp');
 const Efleur = require('../Models/efleur');
+const easyinvoice = require('easyinvoice');
+const moment = require('moment');
+const path = require('path');
+const fs = require('fs');
 
 exports.addItemToCart = async (req, res) => {
     console.log("here");
@@ -238,18 +242,107 @@ exports.createCart = async (req, res) => {
         // Step 1: create cart
         const cart = await cartRepository.addItem(req.body);
         // Step 2: update stock
-        req.body.items.map(async(item)=>{
+        req.body.items.map(async (item) => {
             const productFound = await Product.findById(item.idProduct);
-            if(productFound){
-                if(productFound.producType === 'estamp'){
+            if (productFound) {
+                if (productFound.producType === 'estamp') {
                     await Estamp.findByIdAndUpdate(productFound.estamp, { "$inc": { QunatityEstampDisponible: - item.quantity } }, { new: true })
                 }
-                if(productFound.producType === 'efleur'){
+                if (productFound.producType === 'efleur') {
                     await Efleur.findByIdAndUpdate(productFound.efleur, { "$inc": { QunatityEfleurDisponible: - item.quantity } }, { new: true })
                 }
             }
         });
         // Step 3: create pdf of invoice
+        const currentDate = moment().format('DD-MM-YYYY');
+        const dueDate = moment().format('DD-MM-YYYY');
+        const products = req.body.items.map((item) => {
+            return {
+                "quantity": item.quantity,
+                "description": item.product_name,
+                "tax-rate": 0,
+                "price": item.price
+            }
+        })
+        const data = {
+            // Customize enables you to provide your own templates
+            // Please review the documentation for instructions and examples
+            "customize": {
+                //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html 
+            },
+            "images": {
+                // The logo on top of your invoice
+                "logo": "https://thd.tn/wp-content/uploads/2018/09/laposte.jpg", //"https://public.easyinvoice.cloud/img/logo_en_original.png",
+                // The invoice background
+                //"background": "https://public.easyinvoice.cloud/img/watermark-draft.jpg"
+            },
+            // Your own data
+            "sender": {
+                "company": "Complexe postal de l’Ariana",
+                "address": "2 Avenue Habib Bourguiba",
+                "zip": "2080",
+                "city": "Ariana",
+                "country": "Tunisie",
+                "custom1": "Téléphone: (+216) 71 719 579 - (+216) 71 713 936",
+                "custom2": "E-mail: philatelie@poste.tn",
+                "custom3": "Site Web: https://www.poste.tn/"
+            },
+            // Your recipient
+            "client": {
+                "company": req.user.nom,
+                "address": req.user.adresse,
+                "zip": req.user.tel,
+                //"city": "Clientcity",
+                //"country": "Clientcountry",
+                // "custom1": "custom value 1",
+                // "custom2": "custom value 2",
+                // "custom3": "custom value 3"
+            },
+            "information": {
+                // Invoice number
+                "number": cart._id, //"2021.0001",
+                // Invoice data
+                "date": currentDate,
+                // Invoice due date
+                "due-date": dueDate // "31-12-2021"
+            },
+            // The products you would like to see on your invoice
+            // Total values are being calculated automatically
+            "products": products,
+            // The message you would like to display on the bottom of your invoice
+            "bottom-notice": "La poste tunisienne vous remercie pour votre confiance.",
+            // Settings to customize your invoice
+            "settings": {
+                "locale": 'fr-FR', // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+                "currency": 'DTN', // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')
+                "tax-notation": "TVA", // Defaults to 'vat'
+                // "margin-top": 25, // Defaults to '25'
+                // "margin-right": 25, // Defaults to '25'
+                // "margin-left": 25, // Defaults to '25'
+                // "margin-bottom": 25, // Defaults to '25'
+                "format": "A4", // Defaults to A4, options: A3, A4, A5, Legal, Letter, Tabloid
+                // "height": "1000px", // allowed units: mm, cm, in, px
+                // "width": "500px", // allowed units: mm, cm, in, px
+                // "orientation": "landscape", // portrait or landscape, defaults to portrait
+            },
+            // Translate your invoice to your preferred language
+            "translate": {
+                "invoice": "Facture",  // Default to 'INVOICE'
+                "number": "Numéro", // Defaults to 'Number'
+                "date": "Date", // Default to 'Date'
+                "due-date": "Date d'échéance", // Defaults to 'Due Date'
+                "subtotal": "Total partiel", // Defaults to 'Subtotal'
+                "products": "Produits", // Defaults to 'Products'
+                "quantity": "Quantité", // Default to 'Quantity'
+                "price": "Prix", // Defaults to 'Price'
+                "product-total": "Total", // Defaults to 'Total'
+                "total": "Total" // Defaults to 'Total'
+            },
+        };
+        const result = await easyinvoice.createInvoice(data);
+        // The response will contain a base64 encoded PDF file
+        // console.log('PDF base64 string: ', result.pdf);
+        await fs.writeFileSync(path.resolve(`./storages/invoices/${cart._id}.pdf`), result.pdf, 'base64');
         // Step 4: send invoice in mail
         // Step 5: return response
         res.json(cart);
