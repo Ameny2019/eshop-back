@@ -345,7 +345,7 @@ exports.createCart = async (req, res) => {
         // The response will contain a base64 encoded PDF file
         // console.log('PDF base64 string: ', result.pdf);
         await fs.writeFileSync(path.resolve(`./storages/invoices/${cart._id}.pdf`), result.pdf, 'base64');
-        const invoiceLink = `http://localhost:3000/invoices/${cart._id}.pdf`;
+        const invoiceLink = `${process.env.BACKEND_URL}invoices/${cart._id}.pdf`;
         await Cart.findByIdAndUpdate(cart._id, { invoiceLink }, { new: true })
         // Step 4: send invoice in mail
         await sendEmail(

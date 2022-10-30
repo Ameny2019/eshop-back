@@ -6,7 +6,7 @@ module.exports= {
         const newEstamp={
             sujet: request.body.sujet,
             reference:request.body.reference,
-            photo:request.file.filename,
+            photo:`${process.env.BACKEND_URL}${request.file.filename}`,
             format:request.body.format,
             dateEmission:request.body.dateEmission,
             serie:request.body.serie,

@@ -23,7 +23,8 @@ const updateUserProfile = async (req, res) => {
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
                 }
-                req.body.avatar = `${req.protocol}://${req.headers.host}/${req.file.filename}`;
+                // req.body.avatar = `${req.protocol}://${req.headers.host}/${req.file.filename}`;
+                req.body.avatar = `${process.env.BACKEND_URL}${req.file.filename}`;
             }
             const updatedProfile = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
             res.json({

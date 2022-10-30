@@ -4,7 +4,7 @@ module.exports= {
      { console.log(request.body);
         const newEfleur={
             nom: request.body.nom,
-            photo:request.file.filename,
+            photo:`${process.env.BACKEND_URL}${request.file.filename}`,
             //prix:request.body.prix,
             description:request.body.description,
             QunatityEfleurDisponible:Number.parseInt(request.body.QunatityEfleurDisponible)
