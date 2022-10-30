@@ -1,12 +1,14 @@
 const cartRepository = require('../Repository/cartRepository')
 const productRepository = require('../Repository/ProductRepository');
 const Product = require('../Models/product');
+const Cart = require("../Models/cart");
 const Estamp = require('../Models/estamp');
 const Efleur = require('../Models/efleur');
 const easyinvoice = require('easyinvoice');
 const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
+const sendEmail = require('../Utils/mail');
 
 exports.addItemToCart = async (req, res) => {
     console.log("here");
@@ -343,7 +345,21 @@ exports.createCart = async (req, res) => {
         // The response will contain a base64 encoded PDF file
         // console.log('PDF base64 string: ', result.pdf);
         await fs.writeFileSync(path.resolve(`./storages/invoices/${cart._id}.pdf`), result.pdf, 'base64');
+        const invoiceLink = `http://localhost:3000/invoices/${cart._id}.pdf`;
+        await Cart.findByIdAndUpdate(cart._id, { invoiceLink }, { new: true })
         // Step 4: send invoice in mail
+        await sendEmail(
+            req.user.email,
+            "Facture",
+            {
+                name: req.user.nom,
+                dashboardLink : process.env.DASHBOARD_URL
+            },
+            "invoice_mail.html",
+            [{
+                filename: 'Facture.pdf',
+                content: fs.createReadStream(path.resolve(`./storages/invoices/${cart._id}.pdf`))
+            }]);
         // Step 5: return response
         res.json(cart);
     } catch (error) {

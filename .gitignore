@@ -17,3 +17,6 @@ hts-cache
 # https://git-scm.com/docs/gitignore
 
 .env
+
+storages/invoices/*
+!storages/invoices/.gitkeep
