@@ -7,6 +7,8 @@ const {success} = require("consola");
         success({
             message:`Success to connect to database.`,
         })
+        // Start the seeder script
+        require("./seeder");
     } catch (error) {
            console.log(error);
     }
