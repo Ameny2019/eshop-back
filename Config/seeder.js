@@ -1,5 +1,7 @@
 const User = require('../Models/user');
 const { success } = require("consola");
+const bcrypt = require("bcryptjs");
+const { randomBytes } = require("crypto");
 
 (async () => {
     success({
@@ -10,14 +12,26 @@ const { success } = require("consola");
         // inserts the admins accounts
         const usersToInsert = [
             {
-
+                nom: '',
+                adresse: '',
+                tel: '',
+                email: '',
+                password: bcrypt.hashSync('12356789', 10),
+                role: 'Admin',
+                isActivated: true,
+                verificationCode: randomBytes(6).toString("hex"),
             },
             {
-
+                nom: '',
+                adresse: '',
+                tel: '',
+                email: '',
+                password: bcrypt.hashSync('12356789', 10),
+                role: 'Admin',
+                isActivated: true,
+                verificationCode: randomBytes(6).toString("hex"),
             }
         ];
-        // hash the passwords
-
         // save in the database
         await User.insertMany(usersToInsert);
     }
