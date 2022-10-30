@@ -26,7 +26,7 @@ const register = async (req, res) => {
         req.body.email,
         "Confirmation de votre compte",
         {
-          name: req.body.firstName,
+          name: req.body.nom,
           link: link,
           dashboardLink: process.env.DASHBOARD_URL
         },

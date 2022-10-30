@@ -31,7 +31,7 @@ exports.forgetPassword = async (req, res) => {
       await sendEmail(
         user.email,
         "Demande de réinitialisation de mot de passe",
-        { name: user.firstName, link: link , dashboardLink : process.env.DASHBOARD_URL},
+        { name: user.nom, link: link , dashboardLink : process.env.DASHBOARD_URL},
         "forgot_password.html"
       );
       res.json({ message: "E-mail de réinitialisation du mot de passe envoyé avec succès, veuillez vérifier votre courrier." });
@@ -57,7 +57,7 @@ exports.resetPassword = async (req, res) => {
               usertoUpdate.email,
               "Réinitialisation du mot de passe avec succès",
               {
-                  name: usertoUpdate.firstName,
+                  name: usertoUpdate.nom,
                   dashboardLink : process.env.DASHBOARD_URL
               },
               "reset_password.html"
