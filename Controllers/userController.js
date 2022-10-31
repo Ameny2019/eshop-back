@@ -1,32 +1,46 @@
 
 const User = require("../Models/user");
+const bcrypt = require("bcryptjs");
+const { randomBytes } = require("crypto");
+
 module.exports = {
-  CreateUser: async function (request, result) {
-    const newUser = {
-      nom: request.body.nom,
-      email: request.body.email,
-      password: request.body.password,
-      role: request.body.role,
-      adresse:request.body.adresse,
-      tel:request.body.tel,
-      token:request.body.token,
-      //image:request.file.filename
-    };
-    User.create(newUser, (error, user) => {
-    if (error) {
-        result.status(500).json({
-          message: error,
-          status: 500,
-        });
-      }
-       else {
-        result.status(200).json({
-          message: "user is created",
-          status: 200,
-          data: user,
-        });
-      }
+  CreateUser: async function (request, response) {
+    // check email if not exist 
+    const userFound = await User.findOne({
+      email: request.body.email
     });
+    if (userFound) {
+      response.status(400)
+        .json({ status: 400, message: "Cette adresse e-mail est déjà utilisée!" });
+    } else {
+      const newUser = {
+        nom: request.body.nom,
+        email: request.body.email,
+        password: bcrypt.hashSync(request.body.password, 10),
+        role: request.body.role,
+        adresse:request.body.adresse,
+        tel:request.body.tel,
+        token:request.body.token,
+        //avatar:request.file.filename,
+        isActivated: true,
+        verificationCode: randomBytes(6).toString("hex"),
+      };
+      User.create(newUser, (error, user) => {
+      if (error) {
+          response.status(500).json({
+            message: error,
+            status: 500,
+          });
+        }
+         else {
+          response.status(200).json({
+            message: "L'utilisateur a été créer avec succès.",
+            status: 200,
+            data: user,
+          });
+        }
+      });
+    }
   },
 
   GetAllUsers: function (req, res) {
@@ -56,7 +70,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "utilisateur supprimé !",
+          message: "Utilisateur supprimé avec succès.",
           data: user,
         });
       }
