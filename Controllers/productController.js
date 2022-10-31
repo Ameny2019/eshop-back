@@ -19,7 +19,6 @@ exports.createProduct = async (req, res) => {
         let product = await productRepository.createProduct({
             ...payload
         });
-        console.log("estamps",payload.estamp)
         res.status(200).json({
             status: true,
             data: product,

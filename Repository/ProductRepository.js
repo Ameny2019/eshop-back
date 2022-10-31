@@ -1,4 +1,7 @@
 const Product = require("../Models/product");
+const Estamp = require("../Models/estamp");
+const Efleur = require("../Models/efleur");
+
 exports.products = async () => {
     const products = await Product.find().sort({_id:"desc"}).populate({
         path: "estamp",
@@ -24,6 +27,14 @@ exports.createProduct = async payload => {
     return newProduct
 }
 exports.removeProduct = async id => {
+    const productFound  = await Product.findById(id);
+    if(productFound !== null){
+        if(productFound.producType === 'estamp'){
+            await Estamp.findByIdAndDelete(productFound.estamp);
+        }else{
+            await Efleur.findByIdAndDelete(productFound.efleur);
+        }
+    }
     const product = await Product.findByIdAndRemove(id);
     return product
 }
