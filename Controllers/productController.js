@@ -1,26 +1,31 @@
 const productRepository = require('../Repository/ProductRepository')
-const  Estamp   = require ("../Models/estamp");
-const estamp = require('../Models/estamp');
+const Estamp = require("../Models/estamp");
+const Efleur = require('../Models/efleur');
+
 exports.createProduct = async (req, res) => {
     try {
-        // let payload = {
-        //     name: req.body.name,
-        //     price: req.body.price,
-        //     image: req.file.path
-        // }
-        let payload ={
-            estamp:req.body.estamp,
+        const payload = {
             price: req.body.price,
-            efleur:req.body.efleur,
-            
-            producType:req.body.producType
-
+            producType: req.body.producType,
+            estamp: req.body.estamp,
+            efleur: req.body.efleur,
         }
-        let product = await productRepository.createProduct({
+        const product = await productRepository.createProduct({
             ...payload
         });
+        // approuve and update quantity
+        let updatedQuery = { etatProduct: "OUI" };
+        if (req.body.estamp !== undefined) {
+            updatedQuery['QunatityEstampDisponible'] = req.body.quantity;
+            await Estamp.findByIdAndUpdate(req.params.subProductId, updatedQuery, { new: true })
+        } else {
+            updatedQuery['QunatityEfleurDisponible'] = req.body.quantity;
+            await Efleur.findByIdAndUpdate(req.params.subProductId, updatedQuery, { new: true })
+        }
+        // return response
         res.status(200).json({
             status: true,
+            message: 'Ce produit a été approuvé avec succès.',
             data: product,
         })
     } catch (err) {
@@ -77,10 +82,9 @@ exports.removeProduct = async (req, res) => {
         })
     }
 },
-exports.UpdateProduct= async function (req, res) {
-  // try {
-    let id= req.params.id
-    let productDetails= await productRepository.updateProduct(id, req.body)
-    res.json({productDetails})
-  }
- 
+    exports.UpdateProduct = async function (req, res) {
+        // try {
+        let id = req.params.id
+        let productDetails = await productRepository.updateProduct(id, req.body)
+        res.json({ productDetails })
+    }
