@@ -16,10 +16,8 @@ exports.createProduct = async (req, res) => {
         // approuve and update quantity
         let updatedQuery = { etatProduct: "OUI" };
         if (req.body.estamp !== undefined) {
-            updatedQuery['QunatityEstampDisponible'] = req.body.quantity;
             await Estamp.findByIdAndUpdate(req.params.subProductId, updatedQuery, { new: true })
         } else {
-            updatedQuery['QunatityEfleurDisponible'] = req.body.quantity;
             await Efleur.findByIdAndUpdate(req.params.subProductId, updatedQuery, { new: true })
         }
         // return response
