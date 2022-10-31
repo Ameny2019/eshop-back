@@ -10,7 +10,6 @@ routeEfleur.put("/UpdateEfleur/:id", [passport.authenticate("bearer", { session:
 routeEfleur.delete("/DeleteEfleur/:id", passport.authenticate("bearer", { session: false }), EfleurController.DeleteEfleur);
 routeEfleur.get("/updateEtat/:id", passport.authenticate("bearer", { session: false }), EfleurController.UpdateEtaProductEfleur)
 routeEfleur.get("/getOuiEtatProductEfleur", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurEtatOui)
-routeEfleur.get("/getNonEtatProductEfleur", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurEtatNon)
 
 
 module.exports = routeEfleur

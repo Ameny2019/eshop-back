@@ -1,5 +1,7 @@
 
 const Estamp = require("../Models/estamp");
+const Efleur = require("../Models/efleur");
+
 module.exports = {
   CreateStamp: async function (request, result) {
     const newEstamp = {
@@ -35,8 +37,8 @@ module.exports = {
   },
   UpdateEstamp: function (req, res) {
     // update the photo if necessary
-    if(req.file !== undefined){
-      req.body.photo =  `${process.env.BACKEND_URL}${req.file.filename}`
+    if (req.file !== undefined) {
+      req.body.photo = `${process.env.BACKEND_URL}${req.file.filename}`
     }
     Estamp.updateOne({ _id: req.params.id }, req.body).exec((err, estampUpdate) => {
       if (err) {
@@ -141,20 +143,19 @@ module.exports = {
       });
   },
 
-  GetEstampEtatNon: function (req, res) {
-    Estamp.find({ "etatProduct": "NON" })
-      .populate('categorie')
-      .exec((err, ListEStamps) => {
-        if (err) {
-          res.status(500).json({
-            message: "echec d'avoir la liste",
-            status: 500,
-          });
-        } else {
-          res.status(200).json(ListEStamps);
-        }
+  getProductsToApprouve: async (req, res) => {
+    try {
+      const listEfleursToApprouve = await Efleur.find({ "etatProduct": "NON" });
+      const listEStampsToApprouve = await Estamp.find({ "etatProduct": "NON" });
+      // Step 5: return response
+      res.json({listEStampsToApprouve, listEfleursToApprouve});
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "echec d'avoir la liste",
+        status: 500,
       });
+    }
+
   }
-
 }
-

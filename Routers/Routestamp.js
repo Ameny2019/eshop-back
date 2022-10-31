@@ -11,7 +11,7 @@ routeEstamp.put("/UpdateEstamp/:id", [passport.authenticate("bearer", { session:
 routeEstamp.delete("/DeleteEstamp/:id", passport.authenticate("bearer", { session: false }), estampController.DeleteEstamp);
 routeEstamp.get("/updateEtat/:id", passport.authenticate("bearer", { session: false }), estampController.UpdateEtaProductEstamp)
 routeEstamp.get("/getOuiEtatProductEstamp", passport.authenticate("bearer", { session: false }), estampController.GetEstampEtatOui)
-routeEstamp.get("/getNonEtatProductEstamp", passport.authenticate("bearer", { session: false }), estampController.GetEstampEtatNon)
+routeEstamp.get("/get-products-to-approuve", passport.authenticate("bearer", { session: false }), estampController.getProductsToApprouve)
 
 
 module.exports = routeEstamp

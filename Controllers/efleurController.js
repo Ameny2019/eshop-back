@@ -130,21 +130,6 @@ module.exports = {
           res.status(200).json(ListEfleurs);
         }
       });
-  },
-
-  GetEfleurEtatNon: function (req, res) {
-    Efleur.find({ "etatProduct": "NON" })
-      //.populate('categorie')
-      .exec((err, ListEfleurs) => {
-        if (err) {
-          res.status(500).json({
-            message: "erreur d'afficahe",
-            status: 500,
-          });
-        } else {
-          res.status(200).json(ListEfleurs);
-        }
-      });
   }
 
 }
