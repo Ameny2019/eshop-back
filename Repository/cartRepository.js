@@ -1,25 +1,34 @@
 const Cart = require("../Models/cart");
-exports.cart = async () => {
-    const carts = await Cart.find().populate({
-        path: "items.productId",
-        select: "estamp price total"
-    });;
-    return carts[0];
+exports.getCarts = async () => {
+    const carts = await Cart.find({})
+        .populate({ path: 'user', select: 'nom' });
+    return carts;
 };
+
+exports.removeCartById = async id => {
+    const deleteCart = await Cart.findByIdAndDelete(id);
+    return deleteCart;
+}
+
 exports.addItem = async payload => {
     const newItem = await Cart.create(payload);
     return newItem
 };
-exports.removeItem = async data =>{
-    const newCart= await Cart.deleteOne(data);
-       return newCart
-}
-exports.updateCart = async data =>{
+
+exports.updateCart = async data => {
     const newCart = await Cart.updateOne(data);
     return newCart
 }
 
-exports.getcartById = async id => {
-    const cart = await Cart.findById(id);
+exports.getCartById = async id => {
+    const cart = await Cart.findById(id)
+        .populate({ path: 'user', select: 'nom' })
+        .populate({
+            path: 'items',
+            populate: {
+                path: 'idProduct',
+                model: 'Product'
+            }
+        });
     return cart;
 }

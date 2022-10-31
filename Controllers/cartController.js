@@ -17,7 +17,7 @@ exports.addItemToCart = async (req, res) => {
     const quantity = Number.parseInt(req.body.quantity);
     console.log("productId", productId)
     try {
-        let cart = await cartRepository.cart();
+        let cart = await cartRepository.getCarts();
         let productDetails = await productRepository.productById(productId);
         console.log("productDetails", productDetails)
         if (!productDetails) {
@@ -154,15 +154,9 @@ exports.addItemToCart = async (req, res) => {
         })
     }
 }
-exports.getCart = async (req, res) => {
+exports.getCarts = async (req, res) => {
     try {
-        let cart = await cartRepository.cart()
-        if (!cart) {
-            return res.status(400).json({
-                type: "Invalid",
-                msg: "Cart not Found",
-            })
-        }
+        let cart = await cartRepository.getCarts();
         res.status(200).json({
             status: true,
             data: cart
@@ -171,27 +165,25 @@ exports.getCart = async (req, res) => {
         console.log(err)
         res.status(400).json({
             type: "Invalid",
-            msg: "Something went wrong",
+            message: "Something went wrong",
             err: err
         })
     }
 }
-exports.emptyCart = async (req, res) => {
+
+exports.deleteCart = async (req, res) => {
     try {
-        let cart = await cartRepository.cart();
-        cart.items = [];
-        cart.subTotal = 0
-        let data = await cart.save();
+        const data = await cartRepository.removeCartById(req.params.id);
         res.status(200).json({
             type: "success",
-            mgs: "Cart has been emptied",
+            message: "la commande a été supprimé avec succès.",
             data: data
         })
     } catch (err) {
         console.log(err)
         res.status(400).json({
             type: "Invalid",
-            msg: "Something went wrong",
+            message: "Something went wrong",
             err: err
         })
     }
@@ -202,7 +194,7 @@ exports.removeSingleProduct = async (req, res) => {
     idProd = req.params.id
     prodtoremove = await productRepository.productById(idProd)
     try {
-        let cart = await cartRepository.cart();
+        let cart = await cartRepository.getCarts();
         let productDetails = await productRepository.productById(idProd);
         console.log("prod", productDetails);
         const indexFound = cart.items.findIndex(item => item.productId.id == idProd);
@@ -219,7 +211,7 @@ exports.removeSingleProduct = async (req, res) => {
             cart.items.splice(indexFound, 1);
             cart.subTotal = cart.items.map(item => item.total).reduce((acc, next) => acc + next);
 
-            cart = await cartRepository.removeItem(prodtoremove)
+            // cart = await cartRepository.removeItem(prodtoremove)
             // console.log("okk",cart.subTotal);
         }
         let data = await cart.save();
@@ -379,7 +371,7 @@ exports.updateCart = async (req, res) => {
     const quantity = Number.parseInt(req.body.quantity);
     try {
         // console.log("kkk",quantity)
-        let cart = await cartRepository.cart();
+        let cart = await cartRepository.getCarts();
 
         let productDetails = await productRepository.productById(idProd);
         console.log("id", idProd)
@@ -412,13 +404,15 @@ exports.updateCart = async (req, res) => {
 //
 exports.getCartById = async (req, res) => {
     try {
-        let id = req.params.id;
-        let cart = await cartRepository.getcartById(id);
+        const id = req.params.id;
+        const cartDetails = await cartRepository.getCartById(id);
         res.status(200).json({
             status: true,
-            data: cart,
+            message: 'Récupération dde détails de commandes avec succès.',
+            data: cartDetails,
         })
     } catch (err) {
+        console.log(err);
         res.status(500).json({
             status: false,
             error: err
