@@ -24,7 +24,7 @@ module.exports = {
         });
       } else {
         result.status(200).json({
-          message: "Le timbre a été créer avec succès.",
+          message: "Le timbre a été crée avec succès.",
           status: 200,
           data: estamp,
         });
@@ -34,6 +34,10 @@ module.exports = {
     });
   },
   UpdateEstamp: function (req, res) {
+    // update the photo if necessary
+    if(req.file !== undefined){
+      req.body.photo =  `${process.env.BACKEND_URL}${req.file.filename}`
+    }
     Estamp.updateOne({ _id: req.params.id }, req.body).exec((err, estampUpdate) => {
       if (err) {
         res.status(500).json({
@@ -43,7 +47,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "le timbre est modifié !",
+          message: "Le timbre a été modifié avec succès.",
           data: estampUpdate,
         });
       }
@@ -96,7 +100,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "un timbre est supprimé !",
+          message: "Le timbre a été supprimé avec succès.",
           data: estamp,
         });
       }

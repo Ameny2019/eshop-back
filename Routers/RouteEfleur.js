@@ -6,7 +6,7 @@ const EfleurController = require("../Controllers/efleurController");
 routeEfleur.post("/createEfleur", [passport.authenticate("bearer", { session: false }), upload.single("photo")], EfleurController.CreatEfleur);
 routeEfleur.get("/GetAllEfleur", passport.authenticate("bearer", { session: false }), EfleurController.GetAllEfleur);
 routeEfleur.get("/GetEfleurByID/:id", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurByID);
-routeEfleur.put("/UpdateEfleur/:id", passport.authenticate("bearer", { session: false }), EfleurController.UpdateEfleur);
+routeEfleur.put("/UpdateEfleur/:id", [passport.authenticate("bearer", { session: false }), upload.single("photo")], EfleurController.UpdateEfleur);
 routeEfleur.delete("/DeleteEfleur/:id", passport.authenticate("bearer", { session: false }), EfleurController.DeleteEfleur);
 routeEfleur.get("/updateEtat/:id", passport.authenticate("bearer", { session: false }), EfleurController.UpdateEtaProductEfleur)
 routeEfleur.get("/getOuiEtatProductEfleur", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurEtatOui)

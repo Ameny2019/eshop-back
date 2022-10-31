@@ -26,6 +26,10 @@ module.exports = {
     });
   },
   UpdateEfleur: function (req, res) {
+    // update the photo if necessary
+    if(req.file !== undefined){
+      req.body.photo =  `${process.env.BACKEND_URL}${req.file.filename}`
+    }
     Efleur.updateOne({ _id: req.params.id }, req.body).exec((err, EfleurUpdate) => {
       if (err) {
         res.status(500).json({
@@ -35,7 +39,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "le timbre est modifié !",
+          message: "Le timbre a été modifié avec succès.",
           data: EfleurUpdate,
         });
       }
@@ -88,7 +92,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "un timbre est supprimé !",
+          message: "Ces fleurs ont été supprimé avec succès.",
           data: Efleur,
         });
       }
