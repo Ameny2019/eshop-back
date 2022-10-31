@@ -8,7 +8,6 @@ routeEfleur.get("/GetAllEfleur", passport.authenticate("bearer", { session: fals
 routeEfleur.get("/GetEfleurByID/:id", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurByID);
 routeEfleur.put("/UpdateEfleur/:id", [passport.authenticate("bearer", { session: false }), upload.single("photo")], EfleurController.UpdateEfleur);
 routeEfleur.delete("/DeleteEfleur/:id", passport.authenticate("bearer", { session: false }), EfleurController.DeleteEfleur);
-routeEfleur.get("/updateEtat/:id", passport.authenticate("bearer", { session: false }), EfleurController.UpdateEtaProductEfleur)
 routeEfleur.get("/getOuiEtatProductEfleur", passport.authenticate("bearer", { session: false }), EfleurController.GetEfleurEtatOui)
 
 

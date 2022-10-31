@@ -46,23 +46,7 @@ module.exports = {
     });
   },
 
-  UpdateEtaProductEfleur: function (req, res) {
-    Efleur.updateOne({ _id: req.params.id }, { "etatProduct": "OUI" }).exec((err, efleurUpdate) => {
-      if (err) {
-        res.status(500).json({
-          message: err.message,
-          status: 500,
-        });
-      } else {
-        res.status(200).json({
-          status: 200,
-          message: "etat est modifié !",
-          data: efleurUpdate,
-        });
-      }
 
-    });
-  },
 
   //get Efleur by ID 
   GetEfleurByID: function (req, res) {
