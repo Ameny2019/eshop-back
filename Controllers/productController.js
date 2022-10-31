@@ -68,6 +68,7 @@ exports.removeProduct = async (req, res) => {
         let productDetails = await productRepository.removeProduct(id)
         res.status(200).json({
             status: true,
+            message: 'Le produit a été supprimé avec succès.',
             data: productDetails,
         })
     } catch (err) {
