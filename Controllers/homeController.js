@@ -1,4 +1,5 @@
 const Product = require("../Models/product");
+const sendEmail = require('../Utils/mail');
 
 exports.getProducts = async (req, res) => {
     try {
@@ -20,7 +21,7 @@ exports.getProducts = async (req, res) => {
         });
         return res.status(200).json({fleursProducts, estampsProducts});
     } catch (error) {
-        return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 }
 
@@ -40,6 +41,28 @@ exports.getProductDetails = async (req, res) => {
             return res.status(200).json(productFound);
         }
     } catch (error) {
-        return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+exports.contact = async (req, res) => {
+    try {
+        await sendEmail(
+            process.env.SUPPORT_MAIL,
+            `Contact Form: ${ req.body.subject}`,
+            {
+              name: req.body.name,
+              email: req.body.email,
+              message: req.body.message,
+              dashboardLink: process.env.DASHBOARD_URL
+            },
+            "contact-support.html"
+          );
+        return res.status(200).json({
+            status: 200,
+            message: 'Merci pour votre contact, nous revenions vers vous dans les plus brefs délais.'
+        });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
     }
 }
