@@ -12,23 +12,25 @@ const { randomBytes } = require("crypto");
         // inserts the admins accounts
         const usersToInsert = [
             {
-                nom: '',
-                adresse: '',
-                tel: '',
-                email: '',
-                password: bcrypt.hashSync('12356789', 10),
+                nom: 'Ouelhazi Ameny',
+                adresse: 'Tunis',
+                tel: '+216 58 55 22 33',
+                email: 'ouelhazi.amani19@gmail.com',
+                password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
                 isActivated: true,
+                avatar: `${process.env.BACKEND_URL}1667120445740.jpg`,
                 verificationCode: randomBytes(6).toString("hex"),
             },
             {
-                nom: '',
-                adresse: '',
-                tel: '',
-                email: '',
-                password: bcrypt.hashSync('12356789', 10),
+                nom: 'Dagbouj Hatem',
+                adresse: 'Tunis',
+                tel: '+216 58 55 22 33',
+                email: 'dagboujhatem@gmail.com',
+                password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
                 isActivated: true,
+                avatar: `${process.env.BACKEND_URL}1667120445740.jpg`,
                 verificationCode: randomBytes(6).toString("hex"),
             }
         ];
