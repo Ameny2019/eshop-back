@@ -22,7 +22,7 @@ exports.updateCart = async data => {
 
 exports.getCartById = async id => {
     const cart = await Cart.findById(id)
-        .populate({ path: 'user', select: 'nom' })
+        .populate({ path: 'user', select: 'nom email tel adresse' })
         .populate({
             path: 'items',
             populate: {
