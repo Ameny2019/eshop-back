@@ -14,7 +14,7 @@ const { randomBytes } = require("crypto");
             {
                 nom: 'Ouelhazi Ameny',
                 adresse: 'Tunis',
-                tel: '+216 58 55 22 33',
+                tel: '+216 55 786 851',
                 email: 'ouelhazi.amani19@gmail.com',
                 password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
@@ -23,10 +23,10 @@ const { randomBytes } = require("crypto");
                 verificationCode: randomBytes(6).toString("hex"),
             },
             {
-                nom: 'Dagbouj Hatem',
+                nom: 'Ouelhazi Wassim',
                 adresse: 'Tunis',
-                tel: '+216 58 55 22 33',
-                email: 'dagboujhatem@gmail.com',
+                tel: '+216 58 306 330',
+                email: 'ouelhaziw@gmail.com',
                 password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
                 isActivated: true,
