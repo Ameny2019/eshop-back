@@ -1,7 +1,7 @@
 const passport = require("passport");
 const routeAuth = require("express").Router();
 const authController = require("../Controllers/authController");
-const resetController = require("../controllers/forgot_password.controller");
+const resetController = require("../Controllers/forgotPassword");
 
 routeAuth.post("/login", authController.login);
 routeAuth.post("/register", authController.register);
