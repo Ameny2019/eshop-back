@@ -16,7 +16,7 @@ module.exports = {
         });
       } else {
         result.status(200).json({
-          message: "L'efleur a été créer avec succès.",
+          message: "Un bouquet de fleurs a été créer avec succès.",
           status: 200,
           data: Efleur,
         });
@@ -39,7 +39,7 @@ module.exports = {
       } else {
         res.status(200).json({
           status: 200,
-          message: "Le timbre a été modifié avec succès.",
+          message: "Le bouquet de fleurs a été modifié avec succès.",
           data: EfleurUpdate,
         });
       }
