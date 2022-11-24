@@ -2,6 +2,7 @@
 const User = require("../Models/user");
 const bcrypt = require("bcryptjs");
 const { randomBytes } = require("crypto");
+const cloudinary = require('../middelwares/cloudinary');
 
 module.exports = {
   CreateUser: async function (request, response) {
@@ -18,21 +19,21 @@ module.exports = {
         email: request.body.email,
         password: bcrypt.hashSync(request.body.password, 10),
         role: request.body.role,
-        adresse:request.body.adresse,
-        tel:request.body.tel,
-        token:request.body.token,
+        adresse: request.body.adresse,
+        tel: request.body.tel,
+        token: request.body.token,
         //avatar:request.file.filename,
         isActivated: true,
         verificationCode: randomBytes(6).toString("hex"),
       };
       User.create(newUser, (error, user) => {
-      if (error) {
+        if (error) {
           response.status(500).json({
             message: error,
             status: 500,
           });
         }
-         else {
+        else {
           response.status(200).json({
             message: "L'utilisateur a été créer avec succès.",
             status: 200,
@@ -60,7 +61,14 @@ module.exports = {
         }
       });
   },
-  DeleteUser: function (req, res) {
+  DeleteUser: async function (req, res) {
+    const userFound = await User.findById(req.params.id);
+    // Delete the user avatar from cloudinary 
+    if (userFound.avatar.includes('/avatars/')) {
+      const assetName = userFound.avatar.slice(userFound.avatar.lastIndexOf('avatars'), userFound.avatar.lastIndexOf('.'))
+      cloudinary.destroyAsset(assetName);
+    }
+    // Delete user infos
     User.deleteOne({ _id: req.params.id }).exec((err, user) => {
       if (err) {
         res.status(500).json({
