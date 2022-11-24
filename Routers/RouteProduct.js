@@ -9,3 +9,9 @@ routerProduct.delete("/deleteProduct/:id", passport.authenticate("bearer", { ses
 routerProduct.put("/updateProduct/:id", passport.authenticate("bearer", { session: false }), productController.UpdateProduct);
 
 module.exports = routerProduct;
+
+
+
+
+
+

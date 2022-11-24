@@ -12,3 +12,5 @@ routeAuth.post("/forgot-password", resetController.forgetPassword);
 routeAuth.post("/reset-password", resetController.resetPassword);
 
 module.exports = routeAuth;
+
+

@@ -143,7 +143,7 @@ exports.addItemToCart = async (req, res) => {
                 // let data = await cart.save();
                 res.json(cart);
             }
-        }//rim
+        }
 
     } catch (err) {
         console.log(err)
