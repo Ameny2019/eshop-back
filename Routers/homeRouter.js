@@ -11,7 +11,7 @@ const cloudinary = require('../middelwares/cloudinary');
 const fs = require('fs');
 // Route for upload a single image
 routeHome.post('/upload-single', upload.single('image'), async (req, res) => {
-    const uploader = async (path) => await cloudinary.uploads(path, 'Images'); 
+    const uploader = async (path) => await cloudinary.uploads(path, 'images'); 
     let data = {};
     if(req.file !== undefined){
         const {path} = req.file;
@@ -26,7 +26,7 @@ routeHome.post('/upload-single', upload.single('image'), async (req, res) => {
 
 // Route for upload multiple images 
 routeHome.post('/upload', upload.array('image'), async (req, res) => {
-    const uploader = async (path) => await cloudinary.uploads(path, 'Images');
+    const uploader = async (path) => await cloudinary.uploads(path, 'images');
     const files = req.files;
     const urls = [];
     for(const file of files){
