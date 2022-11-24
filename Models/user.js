@@ -28,7 +28,7 @@ const schemaUser = new mongoose.Schema(
       trim: true,
       default: 'Client'
     },
-    avatar: { type: String , default: `${process.env.BACKEND_URL}1667120445740.jpg`},
+    avatar: { type: String , default: 'http://res.cloudinary.com/dkkbwufyk/image/upload/v1669281121/Images/norc3tudwsnuloh4frov.png'},
     isActivated : {type: Boolean, default: false},
     token: { type: String },
     verificationCode: { type: String },

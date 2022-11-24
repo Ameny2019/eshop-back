@@ -1,6 +1,6 @@
 const User = require("../Models/user");
-const path = require('path');
 const fs = require('fs');
+const cloudinary = require('../middelwares/cloudinary');
 
 const getProfile = async (req, res) => {
     try {
@@ -18,20 +18,24 @@ const updateUserProfile = async (req, res) => {
             res.status(400).json({ message: "Cette adresse e-mail est déjà utilisée!" })
         } else {
             if (req.file) {
-                const fileName = path.basename(userToUpdate.avatar);
-                const filePath = path.resolve('./storages', fileName);
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
+                const uploader = async (path) => await cloudinary.uploads(path, 'avatars');
+                const { path } = req.file;
+                const data = await uploader(path);
+                fs.unlinkSync(path);
+                // delete old avatar if necessary
+                if (userToUpdate.avatar.includes('/avatars/')) {
+                    const assetName = userToUpdate.avatar.slice(userToUpdate.avatar.lastIndexOf('avatars'), userToUpdate.avatar.lastIndexOf('.'))
+                    cloudinary.destroyAsset(assetName);
                 }
-                // req.body.avatar = `${req.protocol}://${req.headers.host}/${req.file.filename}`;
-                req.body.avatar = `${process.env.BACKEND_URL}${req.file.filename}`;
+                // update avatar after upload
+                req.body.avatar = data.url;
             }
             const updatedProfile = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
             res.json({
-                message: "Modification a été effectuée avec succès.", 
-            avatar: updatedProfile.avatar,
-            username: updatedProfile.nom,
-         });
+                message: "Modification a été effectuée avec succès.",
+                avatar: updatedProfile.avatar,
+                username: updatedProfile.nom,
+            });
         }
     } catch (err) {
         console.log(err);
