@@ -7,6 +7,8 @@ const SchemaEfleur = new mongoose.Schema(
         },
         photo: {
             type: String,
+            required: true,
+            default: 'http://res.cloudinary.com/dkkbwufyk/image/upload/v1669291051/images/hazzau7djmkr2ja0kd3a.jpg'
         },
         description: {
             type: String,

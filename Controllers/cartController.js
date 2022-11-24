@@ -8,6 +8,7 @@ const easyinvoice = require('easyinvoice');
 const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('../middelwares/cloudinary');
 const sendEmail = require('../Utils/mail');
 
 exports.addItemToCart = async (req, res) => {
@@ -173,6 +174,12 @@ exports.getCarts = async (req, res) => {
 
 exports.deleteCart = async (req, res) => {
     try {
+        const cartFound = await Cart.findById(req.params.id);
+        // Delete invoice from cloudinary
+        if (cartFound.invoiceLink.includes('/invoices/')) {
+          const assetName = cartFound.invoiceLink.slice(cartFound.invoiceLink.lastIndexOf('invoices'), cartFound.invoiceLink.lastIndexOf('.'))
+          cloudinary.destroyAsset(assetName);
+        }
         const data = await cartRepository.removeCartById(req.params.id);
         res.status(200).json({
             type: "success",
@@ -336,8 +343,14 @@ exports.createCart = async (req, res) => {
         const result = await easyinvoice.createInvoice(data);
         // The response will contain a base64 encoded PDF file
         // console.log('PDF base64 string: ', result.pdf);
-        await fs.writeFileSync(path.resolve(`./storages/invoices/${cart._id}.pdf`), result.pdf, 'base64');
-        const invoiceLink = `${process.env.BACKEND_URL}invoices/${cart._id}.pdf`;
+        const invoicePath = path.resolve(`./storages/${cart._id}.pdf`);
+        await fs.writeFileSync(invoicePath, result.pdf, 'base64');
+        // Store invoice in cloudinary
+        const uploader = async (path) => await cloudinary.uploads(path, 'invoices');
+        const uploaderData = await uploader(invoicePath);
+        fs.unlinkSync(invoicePath);
+        // Get invoice link from cloudinary
+        const invoiceLink =  uploaderData.url;
         await Cart.findByIdAndUpdate(cart._id, { invoiceLink }, { new: true })
         // Step 4: send invoice in mail
         await sendEmail(
@@ -350,7 +363,7 @@ exports.createCart = async (req, res) => {
             "invoice_mail.html",
             [{
                 filename: 'Facture.pdf',
-                content: fs.createReadStream(path.resolve(`./storages/invoices/${cart._id}.pdf`))
+                path: invoiceLink
             }]);
         // Step 5: return response
         res.json(cart);

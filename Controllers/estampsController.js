@@ -1,13 +1,24 @@
 
 const Estamp = require("../Models/estamp");
 const Efleur = require("../Models/efleur");
+const fs = require('fs');
+const cloudinary = require('../middelwares/cloudinary');
 
 module.exports = {
   CreateStamp: async function (request, result) {
+    // Upload the photo 
+    let data = { url: '' }
+    if (request.file) {
+      const uploader = async (path) => await cloudinary.uploads(path, 'estamps');
+      const { path } = request.file;
+      data = await uploader(path);
+      fs.unlinkSync(path);
+    }
+    // Create new record in the database
     const newEstamp = {
       sujet: request.body.sujet,
       reference: request.body.reference,
-      photo: `${process.env.BACKEND_URL}${request.file.filename}`,
+      photo: data.url,
       format: request.body.format,
       dateEmission: request.body.dateEmission,
       serie: request.body.serie,
@@ -35,10 +46,21 @@ module.exports = {
 
     });
   },
-  UpdateEstamp: function (req, res) {
-    // update the photo if necessary
+  UpdateEstamp: async function (req, res) {
+    const estampFound = await Estamp.findById(req.params.id);
+    // Update the photo if necessary
     if (req.file !== undefined) {
-      req.body.photo = `${process.env.BACKEND_URL}${req.file.filename}`
+      const uploader = async (path) => await cloudinary.uploads(path, 'estamps');
+      const { path } = req.file;
+      data = await uploader(path);
+      fs.unlinkSync(path);
+      // delete old photo if necessary
+      if (estampFound.photo.includes('/estamps/')) {
+        const assetName = estampFound.photo.slice(estampFound.photo.lastIndexOf('estamps'), estampFound.photo.lastIndexOf('.'))
+        cloudinary.destroyAsset(assetName);
+      }
+      // update photo after upload
+      req.body.photo = data.url;
     }
     Estamp.updateOne({ _id: req.params.id }, req.body).exec((err, estampUpdate) => {
       if (err) {
@@ -92,7 +114,13 @@ module.exports = {
     });
   },
   //delete Estamp 
-  DeleteEstamp: function (req, res) {
+  DeleteEstamp: async function (req, res) {
+    const estampFound = await Estamp.findById(req.params.id);
+    // delete old photo if necessary
+    if (estampFound.photo.includes('/estamps/')) {
+      const assetName = estampFound.photo.slice(estampFound.photo.lastIndexOf('estamps'), estampFound.photo.lastIndexOf('.'))
+      cloudinary.destroyAsset(assetName);
+    }
     Estamp.deleteOne({ _id: req.params.id }).exec((err, estamp) => {
       if (err) {
         res.status(500).json({
@@ -148,7 +176,7 @@ module.exports = {
       const listEfleursToApprouve = await Efleur.find({ "etatProduct": "NON" });
       const listEStampsToApprouve = await Estamp.find({ "etatProduct": "NON" });
       // Step 5: return response
-      res.json({listEStampsToApprouve, listEfleursToApprouve});
+      res.json({ listEStampsToApprouve, listEfleursToApprouve });
     } catch (error) {
       console.log(error);
       res.status(500).json({

@@ -1,10 +1,21 @@
 const Efleur = require("../Models/efleur");
+const fs = require('fs');
+const cloudinary = require('../middelwares/cloudinary');
+
 module.exports = {
   CreatEfleur: async function (request, result) {
+    // Upload the photo 
+    let data = { url: '' }
+    if (request.file) {
+      const uploader = async (path) => await cloudinary.uploads(path, 'efleurs');
+      const { path } = request.file;
+      data = await uploader(path);
+      fs.unlinkSync(path);
+    }
+    // Create new record in the database
     const newEfleur = {
       nom: request.body.nom,
-      photo: `${process.env.BACKEND_URL}${request.file.filename}`,
-      //prix:request.body.prix,
+      photo: data.url,
       description: request.body.description,
       QunatityEfleurDisponible: Number.parseInt(request.body.QunatityEfleurDisponible)
     };
@@ -25,10 +36,21 @@ module.exports = {
 
     });
   },
-  UpdateEfleur: function (req, res) {
-    // update the photo if necessary
-    if(req.file !== undefined){
-      req.body.photo =  `${process.env.BACKEND_URL}${req.file.filename}`
+  UpdateEfleur: async function (req, res) {
+    const efleurFound = await Efleur.findById(req.params.id);
+    // Update the photo if necessary
+    if (req.file !== undefined) {
+      const uploader = async (path) => await cloudinary.uploads(path, 'efleurs');
+      const { path } = req.file;
+      data = await uploader(path);
+      fs.unlinkSync(path);
+      // delete old photo if necessary
+      if (efleurFound.photo.includes('/efleurs/')) {
+        const assetName = efleurFound.photo.slice(efleurFound.photo.lastIndexOf('efleurs'), efleurFound.photo.lastIndexOf('.'))
+        cloudinary.destroyAsset(assetName);
+      }
+      // update photo after upload
+      req.body.photo = data.url;
     }
     Efleur.updateOne({ _id: req.params.id }, req.body).exec((err, EfleurUpdate) => {
       if (err) {
@@ -66,7 +88,13 @@ module.exports = {
     });
   },
   //delete Efleur 
-  DeleteEfleur: function (req, res) {
+  DeleteEfleur: async function (req, res) {
+    const efleurFound = await Efleur.findById(req.params.id);
+    // delete old photo if necessary
+    if (efleurFound.photo.includes('/efleurs/')) {
+      const assetName = efleurFound.photo.slice(efleurFound.photo.lastIndexOf('efleurs'), efleurFound.photo.lastIndexOf('.'))
+      cloudinary.destroyAsset(assetName);
+    }
     Efleur.deleteOne({ _id: req.params.id }).exec((err, Efleur) => {
       if (err) {
         res.status(500).json({

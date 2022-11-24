@@ -9,6 +9,7 @@ cloudinary.config({
 exports.uploads = (file, folder) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(file, (result) => {
+      // console.log(result);
       resolve({ url: result.url, id: result.public_id });
     }, {
       ressource_type: 'auto',
@@ -17,11 +18,11 @@ exports.uploads = (file, folder) => {
   });
 }
 
-exports.destroyAsset = (assetName) =>{
-  return new Promise((resolve, reject)=>{
-    cloudinary.uploader.destroy(assetName, (result) => { 
-      console.log(result)
-      resolve(result); 
+exports.destroyAsset = (assetName) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(assetName, (result) => {
+      // console.log(result);
+      resolve(result);
     });
   });
 }

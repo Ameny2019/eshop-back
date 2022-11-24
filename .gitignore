@@ -18,5 +18,5 @@ hts-cache
 
 .env
 
-storages/invoices/*
-!storages/invoices/.gitkeep
+storages/*
+!storages/.gitkeep
