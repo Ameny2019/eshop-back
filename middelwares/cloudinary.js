@@ -16,3 +16,12 @@ exports.uploads = (file, folder) => {
     });
   });
 }
+
+exports.destroyAsset = (assetName) =>{
+  return new Promise((resolve, reject)=>{
+    cloudinary.uploader.destroy(assetName, (result) => { 
+      console.log(result)
+      resolve(result); 
+    });
+  });
+}

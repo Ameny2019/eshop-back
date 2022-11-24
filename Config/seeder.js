@@ -19,7 +19,7 @@ const { randomBytes } = require("crypto");
                 password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
                 isActivated: true,
-                avatar: `${process.env.BACKEND_URL}1667332684491.jpg`,
+                avatar: 'http://res.cloudinary.com/dkkbwufyk/image/upload/v1669281121/Images/norc3tudwsnuloh4frov.png',
                 verificationCode: randomBytes(6).toString("hex"),
             },
             {
@@ -30,7 +30,7 @@ const { randomBytes } = require("crypto");
                 password: bcrypt.hashSync('123456789', 10),
                 role: 'Admin',
                 isActivated: true,
-                avatar: `${process.env.BACKEND_URL}1667332684491.jpg`,
+                avatar: 'http://res.cloudinary.com/dkkbwufyk/image/upload/v1669281121/Images/norc3tudwsnuloh4frov.png',
                 verificationCode: randomBytes(6).toString("hex"),
             }
         ];
