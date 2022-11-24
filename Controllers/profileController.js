@@ -1,5 +1,4 @@
 const User = require("../Models/user");
-const path = require('path');
 const fs = require('fs');
 const cloudinary = require('../middelwares/cloudinary');
 
