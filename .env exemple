@@ -5,7 +5,6 @@ JWT_EXPIRES_IN=7d
 MAIL=rimtest43@gmail.com
 PASSWORD=rim44test**
 DASHBOARD_URL=http://localhost:4200/
-BACKEND_URL=http://localhost:3000/
 SUPPORT_MAIL=rimtest43@gmail.com
 CLOUD_NAME=<your_cloud_name>
 CLOUDINARY_API_KEY=<your_api_key>
